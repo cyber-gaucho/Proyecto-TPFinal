@@ -1,1 +1,25 @@
-/.vscode
+# Java
+*.class
+*.jar
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# Salida
+/out/
+*.txt
+*.csv
+
+# Librerías externas
+/lib/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Otros
+desktop.ini
+**/desktop.ini
