@@ -1,4 +1,5 @@
 import monitor.Monitor;
+import red.RedDePetri;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,15 +11,30 @@ public class Main {
         .append("\n|_|  \\__/_||_||_|  |_||_|\\___|/__//__/      \\__|\\___/|_||_|       \\___|\\___/\\__|\\__/_|\n");
         System.out.println(sb.toString());
 
-        Monitor monitor = new Monitor();
+       RedDePetri redDePetri = new RedDePetri();
+       
+       redDePetri.dispararRandom(15);
 
-        for (int i = 0; i < 10; i++) {
-            monitor.fireTransition(i);
-            try {
-                Thread.sleep(1000); // Simula un retraso de 1 segundo entre transiciones
-            } catch (InterruptedException e) {
-                System.err.println("Error al dormir el hilo\n" + e.getStackTrace());
-            }
-        }
     }
 }
+
+/*
+ * TO DO: 
+ * - Crear clases:
+ *   - Plaza: int id, int tokens
+ *   - Transicion: int id, int[] plazasEntrada, int[] plazasSalida, int delay, bool isSencivilizada(), void disparar() (no soporta peso de arco por ahora)
+ *   - Sublcase TransicionDelay: hereda de Transicion, agrega delay y Override disparar() 
+ *   - RedDePetri: vector o mapa para almacenar plazas y transiciones
+ *   - Marcado (?) sería clase o un vector de enteros?
+ * 
+ * - Consultar:
+ *   - Cómo se debe definir la estructura de la red de Petrie?
+ *     - Método 1: hardcodeada, con un constructor que inicialice las plazas y transiciones.
+ *     - Método 2: configurable, con un archivo de configuración: JSON, XML, etc.   
+ *   - Cantidad de hilos = 3 ta bien?
+ *   - Cómo se debe configurar la simulación? Politica, cantidad de invariantes, marcado inicial, delay, etc.
+ *   - -
+ * 
+ * - -
+ * 
+ */
