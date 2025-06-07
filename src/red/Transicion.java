@@ -4,16 +4,17 @@ import java.util.Map;
 
 public class Transicion {
     private int id;
-    private int delay;
+    private double delay;
     private int[] plazasEntrada;
     private int[] plazasSalida;
     private int contador;
 
-    public Transicion(int id, int delay, int[] plazasEntrada, int[] plazasSalida) {
+    public Transicion(int id, double delayMs, int[] plazasEntrada, int[] plazasSalida) {
         this.id = id;
-        this.delay = delay;
+        this.delay = delayMs;
         this.plazasEntrada = plazasEntrada;
         this.plazasSalida = plazasSalida;
+        this.contador = 0;
     }
 
 
@@ -31,7 +32,7 @@ public class Transicion {
             for (int salida : plazasSalida) {
                 plazas.get(salida).addToken();
             }
-            
+            contador++;
             return true;
         } else {
             return false;
@@ -53,7 +54,7 @@ public class Transicion {
         return id;
     }   
 
-    public int getDelay() {
+    public double getDelay() {
         return delay;
     }
 

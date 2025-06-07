@@ -9,9 +9,12 @@ public class RedDePetri {
     private Map<Integer, Plaza> plazas; // Mapa de plazas con su ID y cantidad de tokens
     private Map<Integer, Transicion> transiciones; // Mapa de transiciones con su ID y cantidad de tokens
     private Random random = new Random();
+    private int contadorDisparadas; // Contador de transiciones disparadas
 
     public RedDePetri() {
+
         inicializar();
+        contadorDisparadas = 0;
 
 
     }
@@ -60,7 +63,7 @@ public class RedDePetri {
         transiciones.put(11, new Transicion(11, 0, new int[]{11}, new int[]{0}));
     }
 
-    private String getEstado() {
+    public String getEstado() {
         StringBuilder estado = new StringBuilder();
         estado.append("(");
         for (int i = 0; i < plazas.size(); i++) {
@@ -80,22 +83,66 @@ public class RedDePetri {
             System.out.println("Cantidad debe ser mayor que 0.");
             return;
         }
-        System.out.println("Se disparan " + cantidad + " transiciones al azar:");
-        System.out.println("Estado inicial de la red:\n" + getEstado());
+        //System.out.println("Se disparan " + cantidad + " transiciones al azar:");
+        //System.out.println("Estado inicial de la red:\n" + getEstado());
         for (int i = 1; i <= cantidad; i++) {
             int transicionId = random.nextInt(transiciones.size());
             if(transiciones.get(transicionId).disparar(plazas)) {
-                System.out.printf( "%3d : T" + transicionId + "\n" + getEstado() + "\n", i);
+                contadorDisparadas++;
+                System.out.printf( "%4d : T" + transicionId + "\n" /* + getEstado() + "\n"*/, contadorDisparadas);
             } else {
                 // Si la transición no se puede disparar, se elige otra
                 i--; // Decrementar el contador para intentar de nuevo
             }
         }
-        System.out.println("Estado final de la red:\n" + getEstado());
+        //System.out.println("Estado final de la red:\n" + getEstado());
+    }
+
+    public int getInvariables() {
+        return transiciones.get(11).getContador();
     }
 
     @Override
     public String toString() {
         return "";
+    }
+    /**
+     * Verifica las invariantes de plaza de la red de Petri.
+     * 
+     * @return true si todas las invariantes se cumplen, false en caso contrario.
+     */
+    public boolean invariantesPlazaCheck() {
+        // Verifica si las plazas tienen la cantidad de tokens esperada
+        /*
+         * Tokens: M(P0) + M(P1) + M(P3) + M(P4) + M(P5) + M(P7) + M(P8) + M(P9) + M(P10) + M(P11) = 3
+         * Acceso al buffer: M(P1) + M(P2) = 1
+         * Unidad de procesamiento: M(P4) + M(P5) + M(P6) + M(P7) + M(P8) + M(P9) + M(P10) = 1
+         */
+        boolean boole = true;
+        int invTokens = plazas.get(0).getTokens() + plazas.get(1).getTokens() + plazas.get(3).getTokens() +
+                        plazas.get(4).getTokens() + plazas.get(5).getTokens() + plazas.get(7).getTokens() + 
+                        plazas.get(8).getTokens() + plazas.get(9).getTokens() + plazas.get(10).getTokens() + 
+                        plazas.get(11).getTokens();
+        int invAccesoBuffer = plazas.get(1).getTokens() + plazas.get(2).getTokens();
+        int invUnidadProcesamiento = plazas.get(4).getTokens() + plazas.get(5).getTokens() + plazas.get(6).getTokens() +                                     
+                                     plazas.get(7).getTokens() + plazas.get(8).getTokens() + plazas.get(9).getTokens() +
+                                     plazas.get(10).getTokens();
+
+        if (invTokens != 3) {
+            //System.out.println("Invariante de tokens no cumplida: " + invTokens + " tokens en total, se esperaba 3.");
+            boole = false;
+        }
+        if (invAccesoBuffer != 1) {
+            //System.out.println("Invariante de acceso al buffer no cumplida: " + invAccesoBuffer + " tokens, se esperaba 1.");
+            boole = false;
+        }
+        if (invUnidadProcesamiento != 1) {
+            //System.out.println("Invariante de unidad de procesamiento no cumplida: " + invUnidadProcesamiento + " tokens, se esperaba 1.");
+            boole = false;
+        }
+        // if (boole) {
+        //     System.out.println("Todas las invariantes de plaza se cumplen.");
+        // }
+        return boole;
     }
 }
