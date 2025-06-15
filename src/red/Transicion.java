@@ -1,20 +1,41 @@
 package red;
 
 import java.util.Map;
-
+/**
+ * Clase que representa una transición en una red de Petri. 
+ * Una transición tiene referencias a las plazas de entrada y salida.
+ * La transición puede dispararse si todas las plazas de entrada tienen al menos un token.
+ * Cuando se dispara, se eliminan los tokens de las plazas de entrada y se añaden a las plazas de salida.
+ * La transición también lleva un contador que indica cuántas veces se ha disparado.
+ */
 public class Transicion {
     private int id;
-    private double delay;
+    private long delayMs;
     private int[] plazasEntrada;
     private int[] plazasSalida;
     private int contador;
 
-    public Transicion(int id, double delayMs, int[] plazasEntrada, int[] plazasSalida) {
+    /**
+     * Constructor de la clase Transicion.
+     * Crea una transición con un identificador, un retraso en milisegundos,
+     * y arrays de enteros que representan las plazas de entrada y salida.
+     * 
+     * @param id
+     * @param delayMs
+     * @param plazasEntrada
+     * @param plazasSalida
+     */
+    public Transicion(int id, long delayMs, int[] plazasEntrada, int[] plazasSalida) {
         this.id = id;
-        this.delay = delayMs;
         this.plazasEntrada = plazasEntrada;
         this.plazasSalida = plazasSalida;
         this.contador = 0;
+
+        if (delayMs < 0) {
+            this.delayMs = 0;
+        } else {
+            this.delayMs = delayMs;
+        }
     }
 
 
@@ -26,6 +47,15 @@ public class Transicion {
      */
     public boolean disparar(Map<Integer, Plaza> plazas) {
         if(isSencivilizada(plazas)) {
+            // Revisar si el delay va antes de mover los tokens.
+            if (delayMs > 0) {
+                try {
+                    Thread.sleep(delayMs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             for (int entrada : plazasEntrada) {
                 plazas.get(entrada).removeToken();
             }
@@ -54,8 +84,8 @@ public class Transicion {
         return id;
     }   
 
-    public double getDelay() {
-        return delay;
+    public double getDelayMs() {
+        return delayMs;
     }
 
     public int getContador() {

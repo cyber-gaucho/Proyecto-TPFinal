@@ -1,8 +1,10 @@
 package monitor;
 
 public class Monitor implements MonitorInterface {
-
-    public Monitor() {
+    private red.RedDePetri redDePetri;
+    
+    public Monitor(red.RedDePetri red) {
+        this.redDePetri = red;
     }
 
     @Override

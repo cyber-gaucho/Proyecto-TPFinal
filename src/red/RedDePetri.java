@@ -65,13 +65,13 @@ public class RedDePetri {
 
     public String getEstado() {
         StringBuilder estado = new StringBuilder();
-        estado.append("(");
+        estado.append("( ");
         for (int i = 0; i < plazas.size(); i++) {
             estado.append(plazas.get(i).getTokens()).append(" - ");
         }
-        // borrar el último " - "
+        // borrar el último "- "
         if (estado.length() > 3) {
-            estado.setLength(estado.length() - 3);
+            estado.setLength(estado.length() - 2);
         }
         estado.append(")");
 
