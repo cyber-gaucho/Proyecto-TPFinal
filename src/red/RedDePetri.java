@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class RedDePetri {
     
-    private Map<Integer, Plaza> plazas; // Mapa de plazas con su ID y cantidad de tokens
-    private Map<Integer, Transicion> transiciones; // Mapa de transiciones con su ID y cantidad de tokens
+    private Map<Integer, Plaza> plazas; // Mapa de plazas con su ID
+    private Map<Integer, Transicion> transiciones; // Mapa de transiciones con su ID
     private Random random = new Random();
     private int contadorDisparadas; // Contador de transiciones disparadas
 
@@ -98,14 +98,87 @@ public class RedDePetri {
         //System.out.println("Estado final de la red:\n" + getEstado());
     }
 
+    public boolean dispararT(int transitionId) {
+        Transicion transicion = transiciones.get(transitionId);
+        if (transicion != null && transicion.disparar(plazas)) {
+            contadorDisparadas++;
+            System.out.printf( "%4d : T" + transitionId + "\n" /* + getEstado() + "\n"*/, contadorDisparadas);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isSensitized(int transitionId) {
+        Transicion transicion = transiciones.get(transitionId);
+        if (transicion != null) {
+            return transicion.isSencivilizada(plazas);
+        }
+        return false;
+    }
+
+    /*
+     * Modo de complejidad simple: una sola etapa llevada a cabo en la plaza {P7} 
+     * Modo de complejidad media: dos etapas llevadas a cabo en las plazas {P4, P5} 
+     * Modo de complejidad alta: tres etapas llevadas a cabo en las plazas {P8, P9, P10} 
+     */
+    public int getContSimple() {
+        return transiciones.get(6).getContador();
+    }
+
+    public int getContMedia() {
+        return transiciones.get(4).getContador();
+    }
+
+    public int getContAlta() {
+        return transiciones.get(10).getContador();
+    }
+
     public int getInvariables() {
-        return transiciones.get(11).getContador();
+        // return transiciones.get(11).getContador();
+        return getContAlta() + getContMedia() + getContSimple(); 
+    }
+
+    public Map<Integer, Plaza> getPlazas() {
+        return plazas;
+    }
+
+    public Map<Integer, Transicion> getTransiciones() {
+        return transiciones;
     }
 
     @Override
     public String toString() {
-        return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("===== Red de Petri =====\n");
+        sb.append("Plazas:\n");
+        for (Plaza plaza : plazas.values()) {
+            sb.append("  ").append(plaza).append("\n");
+        }
+        sb.append("Transiciones:\n");
+        for (Transicion transicion : transiciones.values()) {
+            sb.append("  ").append(transicion).append("\n");
+        }
+        sb.append("Transiciones disparadas: ").append(contadorDisparadas).append("\n");
+        sb.append("========================");
+        return sb.toString();
     }
+
+    public String plazasToString() {
+        StringBuilder sb = new StringBuilder();
+        for (Plaza plaza : plazas.values()) {
+            sb.append(plaza.toString()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public String transicionesToString() {
+        StringBuilder sb = new StringBuilder();
+        for (Transicion transicion : transiciones.values()) {
+            sb.append(transicion.toString()).append("\n");
+        }
+        return sb.toString();
+    }
+
     /**
      * Verifica las invariantes de plaza de la red de Petri.
      * 

@@ -45,17 +45,8 @@ public class Transicion {
      * @param Map<Integer, Plaza> plazas
      * @return boolean true si la transición se disparó correctamente, false si no se pudo disparar.
      */
-    public boolean disparar(Map<Integer, Plaza> plazas) {
+    protected synchronized boolean disparar(Map<Integer, Plaza> plazas) {
         if(isSencivilizada(plazas)) {
-            // Revisar si el delay va antes de mover los tokens.
-            if (delayMs > 0) {
-                try {
-                    Thread.sleep(delayMs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
             for (int entrada : plazasEntrada) {
                 plazas.get(entrada).removeToken();
             }
@@ -69,7 +60,7 @@ public class Transicion {
         }
     }
 
-    private boolean isSencivilizada(Map<Integer, Plaza> plazas) {
+    protected boolean isSencivilizada(Map<Integer, Plaza> plazas) {
         boolean isSencivilizada = true;
         for (int entrada : plazasEntrada) {
             if (!(plazas.get(entrada).getTokens() >  0)) {
@@ -90,5 +81,22 @@ public class Transicion {
 
     public int getContador() {
         return contador;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nTransición ").append(id).append(":");
+        sb.append("\n  Retraso: ").append(delayMs).append(" ms");
+        sb.append("\n  Plazas de entrada: ");
+        for (int entrada : plazasEntrada) {
+            sb.append(entrada).append(" ");
+        }
+        sb.append("\n  Plazas de salida: ");
+        for (int salida : plazasSalida) {
+            sb.append(salida).append(" ");
+        }
+        sb.append("\n  Contador: ").append(contador);
+        return sb.toString();
     }
 }
