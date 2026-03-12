@@ -77,35 +77,68 @@ public class Monitor implements MonitorInterface {
     //     }
     // }
 
-    @Override
-    public boolean fireTransition(int transition) {
+    // @Override
+    // public boolean fireTransition(int transition) {
         
-        lock.lock(); 
-        // Asegura que el lock se adquiera antes de cualquier operación
-        // Si el lock no se puede adquirir, el hilo esperará hasta que esté disponible.
-        // Es decir queda esperando en la puerta del monitor.
-        try {
-            while (!red.isSensitized(transition)) {
-                condiciones[transition].await();
-                // The lock associated with this Condition is atomically released 
-                // and the current thread becomes disabled for thread scheduling purposes and lies dormant
-            }
-            boolean disparada = red.dispararT(transition);
-            if (disparada) {
-                for (int t = 0; t < condiciones.length; t++) {
-                    // Notifica a todos los hilos que están esperando cualquier transición
-                    // Esto es útil si hay múltiples transiciones que pueden ser disparadas
-                    // después de que una se haya disparado.
-                    condiciones[t].signalAll();
-                }
-            }
-            return disparada;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
-        } finally {
-            lock.unlock();
+    //     lock.lock(); 
+    //     // Asegura que el lock se adquiera antes de cualquier operación
+    //     // Si el lock no se puede adquirir, el hilo esperará hasta que esté disponible.
+    //     // Es decir queda esperando en la puerta del monitor.
+    //     try {
+    //         while (!red.isSensitized(transition)) {
+    //             condiciones[transition].await();
+    //             // The lock associated with this Condition is atomically released 
+    //             // and the current thread becomes disabled for thread scheduling purposes and lies dormant
+    //         }
+    //         boolean disparada = red.dispararT(transition);
+    //         if (disparada) {
+    //             for (int t = 0; t < condiciones.length; t++) {
+    //                 // Notifica a todos los hilos que están esperando cualquier transición
+    //                 // Esto es útil si hay múltiples transiciones que pueden ser disparadas
+    //                 // después de que una se haya disparado.
+    //                 condiciones[t].signalAll();
+    //             }
+    //         }
+    //         return disparada;
+    //     } catch (InterruptedException e) {
+    //         Thread.currentThread().interrupt();
+    //         return false;
+    //     } finally {
+    //         lock.unlock();
+    //     }
+    // }
+
+    @Override
+public boolean fireTransition(int transition) {
+    // First, wait until the transition is sensitized
+    lock.lock();
+    try {
+        while (!red.isSensitized(transition)) {
+            condiciones[transition].await();
         }
+        // At this point, the transition is sensitized
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        return false;
+    } finally {
+        lock.unlock();
     }
+
+    // Fire the transition OUTSIDE the lock
+    boolean disparada = red.dispararT(transition);
+
+    // After firing, notify all waiting threads (re-acquire the lock)
+    lock.lock();
+    try {
+        if (disparada) {
+            for (Condition c : condiciones) {
+                c.signalAll();
+            }
+        }
+    } finally {
+        lock.unlock();
+    }
+    return disparada;
+}
     
 }

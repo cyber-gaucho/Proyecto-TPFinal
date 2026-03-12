@@ -21,7 +21,10 @@ public abstract class HiloDisparador implements Runnable {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 for (int t : transiciones) {
-                    monitor.fireTransition(t);
+                    boolean fired = false;
+                    while (!fired && !Thread.currentThread().isInterrupted()) {
+                        fired = monitor.fireTransition(t);
+                    }
                 }
             }
         } catch (Exception e) {

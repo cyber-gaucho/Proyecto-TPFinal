@@ -25,7 +25,7 @@ public class Main {
         }
 
         while(red.getInvariables() < 200) {
-            // Esperar a que los hilos terminen o se alcance el número de invariantes
+            // Esperar a que se alcance el número de invariantes
             try {
                 Thread.sleep(100); // Esperar un poco antes de verificar nuevamente
             } catch (InterruptedException e) {
@@ -65,7 +65,7 @@ public class Main {
     }
 
     public static void printResults(RedDePetri red) {
-        System.out.println("Simulación finalizada.");
+        System.out.println("\nSimulación finalizada.");
         System.out.println("Invariables alcanzadas: " + red.getInvariables());
         System.out.println("Estadística de los modos de procesamiento:");
         System.out.println("Modo de complejidad simple: " + red.getContSimple());
@@ -92,6 +92,9 @@ public class Main {
  *      - Ver si es necesario usar un ExecutorService para manejar los hilos.
  *      - Ver si es necesario usar un semáforo para controlar el acceso a los recursos compartidos.
  * - Ver si es necesario el synchronized que le metí en el método disparar de las transiciones.       
+ * 
+ * - REVISAR ERROR GRAVE: Actualmente los hilos disparan las transiciones desde adentro del monitor,
+ * 
  * 
  * - Consultar:
  *   - Cómo se debe definir la estructura de la red de Petri?
