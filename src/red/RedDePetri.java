@@ -12,11 +12,8 @@ public class RedDePetri {
     private int contadorDisparadas; // Contador de transiciones disparadas
 
     public RedDePetri() {
-
         inicializar();
         contadorDisparadas = 0;
-
-
     }
 
     private void inicializar() {
@@ -67,13 +64,12 @@ public class RedDePetri {
         StringBuilder estado = new StringBuilder();
         estado.append("( ");
         for (int i = 0; i < plazas.size(); i++) {
-            estado.append(plazas.get(i).getTokens()).append(" - ");
+            estado.append(plazas.get(i).getTokens());
+            if(i != plazas.size()-1){
+                estado.append(" - ");
+            }
         }
-        // borrar el último "- "
-        if (estado.length() > 3) {
-            estado.setLength(estado.length() - 2);
-        }
-        estado.append(")");
+        estado.append(" )");
 
         return estado.toString();
     }
@@ -134,8 +130,8 @@ public class RedDePetri {
     }
 
     public int getInvariables() {
-        // return transiciones.get(11).getContador();
-        return getContAlta() + getContMedia() + getContSimple(); 
+        return transiciones.get(11).getContador();
+        // return getContAlta() + getContMedia() + getContSimple(); 
     }
 
     public Map<Integer, Plaza> getPlazas() {
@@ -146,6 +142,11 @@ public class RedDePetri {
         return transiciones;
     }
 
+    /**
+     * Crea un String con una descripción de la red y estadísticas de las transiciones.
+     * 
+     * @return String con estadística de la red
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -191,7 +192,7 @@ public class RedDePetri {
          * Acceso al buffer: M(P1) + M(P2) = 1
          * Unidad de procesamiento: M(P4) + M(P5) + M(P6) + M(P7) + M(P8) + M(P9) + M(P10) = 1
          */
-        boolean boole = true;
+        boolean flag = true;
         int invTokens = plazas.get(0).getTokens() + plazas.get(1).getTokens() + plazas.get(3).getTokens() +
                         plazas.get(4).getTokens() + plazas.get(5).getTokens() + plazas.get(7).getTokens() + 
                         plazas.get(8).getTokens() + plazas.get(9).getTokens() + plazas.get(10).getTokens() + 
@@ -203,19 +204,19 @@ public class RedDePetri {
 
         if (invTokens != 3) {
             //System.out.println("Invariante de tokens no cumplida: " + invTokens + " tokens en total, se esperaba 3.");
-            boole = false;
+            flag = false;
         }
         if (invAccesoBuffer != 1) {
             //System.out.println("Invariante de acceso al buffer no cumplida: " + invAccesoBuffer + " tokens, se esperaba 1.");
-            boole = false;
+            flag = false;
         }
         if (invUnidadProcesamiento != 1) {
             //System.out.println("Invariante de unidad de procesamiento no cumplida: " + invUnidadProcesamiento + " tokens, se esperaba 1.");
-            boole = false;
+            flag = false;
         }
         // if (boole) {
         //     System.out.println("Todas las invariantes de plaza se cumplen.");
         // }
-        return boole;
+        return flag;
     }
 }

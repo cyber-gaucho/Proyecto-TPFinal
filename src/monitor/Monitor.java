@@ -109,36 +109,36 @@ public class Monitor implements MonitorInterface {
     // }
 
     @Override
-public boolean fireTransition(int transition) {
-    // First, wait until the transition is sensitized
-    lock.lock();
-    try {
-        while (!red.isSensitized(transition)) {
-            condiciones[transition].await();
-        }
-        // At this point, the transition is sensitized
-    } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        return false;
-    } finally {
-        lock.unlock();
-    }
-
-    // Fire the transition OUTSIDE the lock
-    boolean disparada = red.dispararT(transition);
-
-    // After firing, notify all waiting threads (re-acquire the lock)
-    lock.lock();
-    try {
-        if (disparada) {
-            for (Condition c : condiciones) {
-                c.signalAll();
+    public boolean fireTransition(int transition) {
+        // First, wait until the transition is sensitized
+        lock.lock();
+        try {
+            while (!red.isSensitized(transition)) {
+                condiciones[transition].await();
             }
+            // At this point, the transition is sensitized
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        } finally {
+            lock.unlock();
         }
-    } finally {
-        lock.unlock();
+
+        // Fire the transition OUTSIDE the lock
+        boolean disparada = red.dispararT(transition);
+
+        // After firing, notify all waiting threads (re-acquire the lock)
+        lock.lock();
+        try {
+            if (disparada) {
+                for (Condition c : condiciones) {
+                    c.signalAll();
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return disparada;
     }
-    return disparada;
-}
     
 }
