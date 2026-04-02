@@ -129,7 +129,7 @@ public class RedDePetri {
         return transiciones.get(10).getContador();
     }
 
-    public int getInvariables() {
+    public int getInvariantes() {
         return transiciones.get(11).getContador();
         // return getContAlta() + getContMedia() + getContSimple(); 
     }

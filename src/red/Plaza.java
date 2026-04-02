@@ -49,6 +49,31 @@ public class Plaza {
         return tokens > 0;
     }
 
+    /**
+     * Agrega un token a la plaza.
+     */
+    public void addToken() {
+        tokens++;
+    }
+
+    /**
+     * Agrega una cantidad específica de tokens a la plaza.
+     * 
+     * @param count Cantidad de tokens a agregar
+     * @throws IllegalArgumentException si count es negativo
+    */
+   public void addTokens(int count) {
+        if (count < 0) {
+            throw new IllegalArgumentException("No se puede agregar un número negativo de tokens.");
+        }
+        tokens += count;
+    }
+
+    /**
+     * Elimina un token de la plaza. Si no hay tokens disponibles, lanza una excepción.
+     * 
+     * @throws IllegalStateException si no hay tokens para eliminar
+     */
     public void removeToken() {
         if (tokens > 0) {
             tokens--;
@@ -57,17 +82,13 @@ public class Plaza {
         }
     }
 
-    public void addToken() {
-        tokens++;
-    }
-
-    public void addTokens(int count) {
-        if (count < 0) {
-            throw new IllegalArgumentException("No se puede agregar un número negativo de tokens.");
-        }
-        tokens += count;
-    }
-
+    /**
+     * Elimina una cantidad específica de tokens de la plaza.
+     * 
+     * @param count Cantidad de tokens a eliminar
+     * @throws IllegalArgumentException si count es negativo
+     * @throws IllegalStateException si no hay suficientes tokens para eliminar
+     */
     public void removeTokens(int count) {
         if (count < 0) {
             throw new IllegalArgumentException("No se puede eliminar un número negativo de tokens.");
@@ -81,7 +102,4 @@ public class Plaza {
     public void resetTokens() {
         tokens = 0;
     }
-
-
-
 }

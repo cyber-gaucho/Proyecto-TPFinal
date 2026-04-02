@@ -8,7 +8,7 @@ public class ComplejidadMedia extends HiloDisparador {
     }
 
     @Override
-    protected String obtenerNombre() {
+    protected String getNombre() {
         return "ComplejidadMedia";
     }
 }

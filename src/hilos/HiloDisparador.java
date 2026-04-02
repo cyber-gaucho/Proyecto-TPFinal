@@ -14,7 +14,7 @@ public abstract class HiloDisparador implements Runnable {
         this.transiciones = transiciones;
     }
 
-    protected abstract String obtenerNombre();
+    protected abstract String getNombre();
 
     @Override
     public void run() {
@@ -30,12 +30,12 @@ public abstract class HiloDisparador implements Runnable {
                 }
             }
         } finally {
-            System.out.println("Hilo " + obtenerNombre() + " detenido.");
+            System.out.println("Hilo " + getNombre() + " detenido.");
         }
     }
 
     @Override
     public String toString() {
-        return obtenerNombre() + " " + id;
+        return getNombre() + " " + id;
     }
 }

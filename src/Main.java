@@ -34,7 +34,7 @@ public class Main {
         }
         
         // Thread principal monitorea el progreso
-        while (redDePetri.getInvariables() < 200) {
+        while (redDePetri.getInvariantes() < 200) {
             try {
                 Thread.sleep(500); // Verificar cada 500ms
             } catch (InterruptedException e) {
@@ -45,7 +45,7 @@ public class Main {
         
         // Se alcanzó la meta, detener todos los hilos
         System.out.println("\n======================================");
-        System.out.println("META ALCANZADA: " + redDePetri.getInvariables() + " invariables");
+        System.out.println("META ALCANZADA: " + redDePetri.getInvariantes() + " invariantes");
         System.out.println("Interrumpiendo hilos disparadores...");
         
         // Interrumpir todos los hilos
@@ -69,11 +69,16 @@ public class Main {
         // Mostrar resultados finales
         System.out.println("\n======================================");
         System.out.println("SIMULACIÓN FINALIZADA");
-        System.out.println("Invariables alcanzadas: " + redDePetri.getInvariables());
+        System.out.println("Invariables alcanzadas: " + redDePetri.getInvariantes());
         System.out.println("    Modo simple: " + redDePetri.getContSimple());
         System.out.println("    Modo media: " + redDePetri.getContMedia());
         System.out.println("    Modo alta: " + redDePetri.getContAlta());
         System.out.println("Estado final de la red:\n" + redDePetri.getEstado());
+        if(redDePetri.invariantesPlazaCheck()) {
+            System.out.println("Todos los invariantes de plaza se mantienen.");
+        } else {
+            System.out.println("Error: Se han violado invariantes de plaza.");
+        }
         printArt();
     }
 
