@@ -110,13 +110,13 @@ public class Monitor implements MonitorInterface {
 
     @Override
     public boolean fireTransition(int transition) {
-        // First, wait until the transition is sensitized
+        // Primero, el hilo intenta adquirir el lock para entrar al monitor
         lock.lock();
         try {
             while (!red.isSensitized(transition)) {
                 condiciones[transition].await();
             }
-            // At this point, the transition is sensitized
+            // En este punto, la transición está sensibilizada y el hilo puede intentar dispararla
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return false;
@@ -124,10 +124,10 @@ public class Monitor implements MonitorInterface {
             lock.unlock();
         }
 
-        // Fire the transition OUTSIDE the lock
+        // Disparar transición fuera del lock para permitir que otros hilos puedan intentar disparar otras transiciones
         boolean disparada = red.dispararT(transition);
 
-        // After firing, notify all waiting threads (re-acquire the lock)
+        // Si la transición se disparó, notificar a todos los hilos que podrían estar esperando cualquier transición
         lock.lock();
         try {
             if (disparada) {
