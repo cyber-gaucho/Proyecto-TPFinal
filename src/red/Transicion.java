@@ -79,6 +79,10 @@ public class Transicion {
         return delayMs;
     }
 
+    public int[] obtenerPlazasEntrada() {
+        return plazasEntrada;
+    }
+
     public int getContador() {
         return contador;
     }

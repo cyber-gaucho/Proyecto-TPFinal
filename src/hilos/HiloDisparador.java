@@ -14,29 +14,28 @@ public abstract class HiloDisparador implements Runnable {
         this.transiciones = transiciones;
     }
 
-    protected abstract String getNombre();
+    protected abstract String obtenerNombre();
 
     @Override
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 for (int t : transiciones) {
-                    boolean fired = false;
-                    while (!fired && !Thread.currentThread().isInterrupted()) {
-                        fired = monitor.fireTransition(t);
+                    // Intentar disparar la transición
+                    monitor.fireTransition(t);
+                    // Continuamos a la siguiente transición sin importar si se disparó o no
+                    if (Thread.currentThread().isInterrupted()) {
+                        return;
                     }
                 }
             }
-        } catch (Exception e) {
-            if (e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
-            // Optionally handle interruption or logging
+        } finally {
+            System.out.println("Hilo " + obtenerNombre() + " detenido.");
         }
     }
 
     @Override
     public String toString() {
-        return getNombre() + " " + id;
+        return obtenerNombre() + " " + id;
     }
 }

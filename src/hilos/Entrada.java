@@ -8,7 +8,7 @@ public class Entrada extends HiloDisparador {
     }
 
     @Override
-    protected String getNombre() {
+    protected String obtenerNombre() {
         return "Entrada";
     }
 }

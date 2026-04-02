@@ -58,3 +58,8 @@ Respuesta: el id
  * Análisis del tiempo de la ejecución de la red de Petri.
  * 18:43 dice Ventre que no tendríamos varios hilos disparando la misma transición. **(Indica que la transición 11 tiene un solo hilo)**
  * La clase `monitor`, no puede contener ninguna referencia a transiciones puntuales de la  red  en  cuestión.  Es  decir,  el  monitor  debe  ser  agnóstico  a  la  red  que  está ejecutando. De esta manera, cambiando la red de Petri, la clase Monitor no sufre ningún cambio.
+
+---
+
+ # Ideas
+ * Modificar la clase `HiloDisparador` para que admita un `String nombre` y usarlo en lugar de crar subclases con nombre y las transiciones hardocodeadeas. Usaríamos directamente la super clase para crear los hilos.
